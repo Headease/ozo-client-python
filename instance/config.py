@@ -18,16 +18,6 @@ def envget_str(key: str, dflt: str = '') -> str:
     return os.environ[key] if key in os.environ else dflt
 
 
-def envget_int(key: str, dflt: int = 0) -> int:
-    """
-    Gets a value from the os.environ, and defaults to the value of dflt if not set in the environment.
-    :param key: environment variable name
-    :param dflt: default value, if not present in the environment
-    :return: either the value of the environment variable or the default value (dflt)
-    """
-    return int(os.environ[key]) if key in os.environ else dflt
-
-
 def envget_bool(key, dflt: bool = False) -> bool:
     """
     Gets a value from the os.environ, and defaults to the value of dflt if not set in the environment.
@@ -38,15 +28,6 @@ def envget_bool(key, dflt: bool = False) -> bool:
     val = envget_str(key, 'True' if dflt else 'False')
     return val.lower() in ['true', 'yes', '1', 'y']
 
-def envget_list(key: str, dflt: list = '') -> list:
-    """
-    Gets a value from the os.environ, and defaults to the value of dflt if not set in the environment.
-    :param key: environment variable name
-    :param dflt: default value, if not present in the environment
-    :return: either the value of the environment variable or the default value (dflt)
-    """
-    return list(os.environ[key]) if key in os.environ else dflt
-
 
 DEBUG = envget_bool('DEBUG', False)
 
@@ -55,4 +36,3 @@ SESSION_TYPE = envget_str('APP_SESSION_TYPE', 'filesystem')
 
 NUTS_BASE_URL = envget_str('NUTS_BASE_URL', '')
 DID_DATA_SOURCE = envget_str('DID_DATA_SOURCE', '')
-

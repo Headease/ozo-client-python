@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <title>OZO Python client</title>
 </head>
@@ -11,9 +11,9 @@
     <button onclick="connectToOzo()">Connect with ozo</button>
     <button onclick="accessToken()">Request access token</button>
 </form>
-<p>
+<div>
     <pre id="token_value"></pre>
-</p>
+</div>
 <script>
     document.onreadystatechange = function () {
         let user_id = localStorage.getItem('user_id') || '';

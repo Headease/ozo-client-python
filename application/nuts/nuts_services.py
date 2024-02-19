@@ -11,7 +11,7 @@ class NutsService:
         return current_app.config.get('NUTS_BASE_URL')
 
     @staticmethod
-    def get_taget_did():
+    def get_target_did():
         return current_app.config.get('DID_DATA_SOURCE')
 
     def _create_did(self, user_id):
@@ -42,7 +42,7 @@ class NutsService:
         did = self.get_or_create_did(user_id)
         url = f'{self.get_base_url()}/iam/{did["id"]}/start-oid4vci-issuance'
         issuer = "did:web:issuer.ozo.headease.nl"
-        type = 'OzoUserCredential'
+        credential_type = 'OzoUserCredential'
         data = {
             'issuer': issuer,
             'redirectURL': redirect_uri,
@@ -53,11 +53,11 @@ class NutsService:
                     "credential_definition": {
                         "@context": [
                             "https://www.w3.org/2018/credentials/v1",
-                            "https://cibg.nl/2024/credentials/" + type.lower()
+                            "https://cibg.nl/2024/credentials/" + credential_type.lower()
                         ],
                         "type": [
                             "VerifiableCredential",
-                            type
+                            credential_type
                         ]
                     }
                 }
@@ -79,7 +79,7 @@ class NutsService:
         :param user_id: the user id if the current user
         :return:
         """
-        target_did = self.get_taget_did()
+        target_did = self.get_target_did()
         requester = self.get_or_create_did(user_id)
         url = f'{self.get_base_url()}/internal/auth/v2/{requester["id"]}/request-service-access-token'
         data = {
