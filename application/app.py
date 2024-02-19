@@ -10,6 +10,14 @@ def register_blueprints(app):
     app.register_blueprint(index.views.create_blueprint())
 
 
+def check_environment(app):
+    var_names = ['NUTS_BASE_URL', 'DID_DATA_SOURCE']
+    for var_name in var_names:
+        print(f'Checking env: {var_name}:  {app.config.get(var_name)}')
+        if not app.config.get(var_name):
+            raise ValueError(f'Missing required env variable {var_name}')
+
+
 def create_app(config=None) -> Flask:
     app = Flask(__name__, instance_relative_config=True,
                 static_url_path='',
@@ -24,4 +32,5 @@ def create_app(config=None) -> Flask:
         app.config.from_mapping(config)
 
     register_blueprints(app)
+    check_environment(app)
     return app
