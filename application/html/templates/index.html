@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>OZO Python client</title>
+</head>
+<body>
+<h1>OZO Python client</h1>
+<form onsubmit="return false" method="post">
+    <label for="user_id">User ID</label>
+    <input autocomplete="username" id="user_id" name="user_id" type="text"/>
+    <br/>
+    <button onclick="connectToOzo()">Connect with ozo</button>
+    <button onclick="accessToken()">Request access token</button>
+</form>
+<p>
+    <pre id="token_value"></pre>
+</p>
+<script>
+    document.onreadystatechange = function () {
+        let user_id = localStorage.getItem('user_id') || '';
+        if (user_id) {
+            document.getElementById('user_id').value = user_id
+        }
+    }
+
+    function connectToOzo() {
+        let user_id = document.getElementById('user_id').value;
+        if (user_id) {
+            localStorage.setItem("user_id", user_id)
+            document.location = '/authenticate_with_ozo/' + encodeURIComponent(user_id)
+        }
+    }
+
+    async function accessToken() {
+        let user_id = document.getElementById('user_id').value;
+        if (user_id) {
+            let data = await fetch('/get_access_token/' + encodeURIComponent(user_id)).then(data => data.json());
+            document.getElementById('token_value').textContent = JSON.stringify(data, null, 2)
+        }
+        return false
+    }
+</script>
+</body>
+</html>

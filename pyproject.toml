@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "headease-ozo-client-python"
+version = "0.1.0"
+description = ""
+authors = ["Roland Groen <roland@edia.nl>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+flask = "^3.0.2"
+flask-behind-proxy = "^0.1.1"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
