@@ -40,13 +40,13 @@ class NutsService:
         :return: a redirect location for the current user agent.
         """
         did = self.get_or_create_did(user_id)
-        url = f'{self.get_base_url()}/iam/{did["id"]}/start-oid4vci-issuance'
+        url = f'{self.get_base_url()}/internal/auth/v2/{did["id"]}/request-credential'
         issuer = "did:web:issuer.ozo.headease.nl"
         credential_type = 'OzoUserCredential'
         data = {
             'issuer': issuer,
-            'redirectURL': redirect_uri,
-            'authorizationDetails': [
+            'redirect_uri': redirect_uri,
+            'authorization_details': [
                 {
                     "type": "openid_credential",
                     "format": "jwt_vc",
@@ -64,8 +64,8 @@ class NutsService:
             ],
         }
         resp = requests.post(url, json=data, allow_redirects=False)
-        if resp.status_code == 302:
-            return resp.headers.get('Location')
+        if resp.status_code == 200:
+            return resp.json()['redirect_uri']
 
         raise Exception("Did not receive a redirect from the nuts-node")
 
