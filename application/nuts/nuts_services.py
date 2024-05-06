@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 import requests
 from flask import current_app
 
@@ -11,13 +13,19 @@ class NutsService:
         return current_app.config.get('NUTS_BASE_URL')
 
     @staticmethod
+    def get_base_url_int():
+        return current_app.config.get('NUTS_BASE_URL_INT')
+
+    @staticmethod
     def get_target_did():
         return current_app.config.get('DID_DATA_SOURCE')
 
-    def _create_did(self, user_id):
-        url = f'{self.get_base_url()}/internal/vdr/v2/did'
+    def _create_did(self, user_name):
+        url = f'{self.get_base_url_int()}/internal/vdr/v2/did'
+        hostname = urlparse(self.get_base_url()).hostname
+
         data = {
-            'id': user_id
+            'did': f'did:web:{hostname}:iam:{user_name}'
         }
         return requests.post(url, json=data).json()
 
@@ -40,8 +48,8 @@ class NutsService:
         :return: a redirect location for the current user agent.
         """
         did = self.get_or_create_did(user_id)
-        url = f'{self.get_base_url()}/internal/auth/v2/{did["id"]}/request-credential'
-        issuer = "did:web:issuer.ozo.headease.nl"
+        url = f'{self.get_base_url_int()}/internal/auth/v2/{did["id"]}/request-credential'
+        issuer = self.get_did_issuer()
         credential_type = 'OzoUserCredential'
         data = {
             'issuer': issuer,
@@ -81,7 +89,7 @@ class NutsService:
         """
         target_did = self.get_target_did()
         requester = self.get_or_create_did(user_id)
-        url = f'{self.get_base_url()}/internal/auth/v2/{requester["id"]}/request-service-access-token'
+        url = f'{self.get_base_url_int()}/internal/auth/v2/{requester["id"]}/request-service-access-token'
         data = {
             'verifier': target_did,
             'scope': 'ozo'
@@ -91,6 +99,10 @@ class NutsService:
             return resp.json()
         else:
             raise ValueError(f"Unexpected status ({resp.status_code}) from the nuts node.")
+
+    @staticmethod
+    def get_did_issuer():
+        return current_app.config.get("DID_ISSUER")
 
 
 nuts_service = NutsService()
